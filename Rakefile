@@ -6,11 +6,7 @@ require "jekyll"
 
 # Change your GitHub reponame
 GITHUB_REPONAME    = "redrick/redrick.github.io"
-<<<<<<< HEAD
 GITHUB_REPO_BRANCH = "master"
-=======
-GITHUB_REPO_BRANCH = "gh-pages"
->>>>>>> origin/master
 
 SOURCE = "source/"
 DEST   = "_site"
@@ -47,7 +43,7 @@ task :publish => [:generate] do
     message = "Site updated at #{Time.now.utc}"
     system "git commit -am #{message.inspect}"
     system "git remote add origin git@github.com:#{GITHUB_REPONAME}.git"
-    system "git push origin #{GITHUB_REPO_BRANCH} --force"
+    system "git push origin #{GITHUB_REPO_BRANCH}"
 
     Dir.chdir pwd
   end
