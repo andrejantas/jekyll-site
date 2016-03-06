@@ -43,7 +43,7 @@ task :publish => [:generate] do
     message = "Site updated at #{Time.now.utc}"
     system "git commit -am #{message.inspect}"
     system "git remote add origin git@github.com:#{GITHUB_REPONAME}.git"
-    system "git push origin #{GITHUB_REPO_BRANCH}"
+    system "git push origin #{GITHUB_REPO_BRANCH} --force"
 
     Dir.chdir pwd
   end
