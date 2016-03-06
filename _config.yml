@@ -1,0 +1,53 @@
+# Build settings
+permalink   : /blog/:year/:title/
+markdown    : kramdown
+highlighter : pygments
+gems: [jekyll-paginate]
+
+paginate: 3
+paginate_path: "/blog/page/:num/"
+comments: true
+
+source: source
+destination: _site
+sass:
+  sass_dir: _scss
+  style: compressed # expanded
+
+# SEO settings
+title: Andrej Antaš
+description: "My personal pages"
+keywords: "Ruby, Ruby on Rails, Andrej, blog, web"
+url: http://antas.cz
+baseurl: ""
+
+google_analytics: UA-48430027-1
+repo: http://github.com/redrick/redrick.github.io
+disqus_shortname: "andrejantas"
+disqus_site_shortname: "andrejantas"
+
+# Author settings
+author:
+  name      : Andrej Antaš
+  job       : Ruby on Rails developer
+  bio       : "Ruby on Rails developer based in Prague, born in Slovakian mountains spending my time in startups helping amazing stuff happen. Also drinking accessive amounts of coffee through day..."
+  thumb     : /images/andrej.jpeg
+  email     : andrej@antas.cz
+  url       : http://antas.cz
+  github    : http://github.com/redrick
+  twitter   : http://twitter.com/AndrejAntas
+  facebook  : http://facebook.com/redricko
+  linkedin  : https://cz.linkedin.com/in/andrej-antaš-77140b39
+
+# navbar pages
+navbar:
+  - slug: about
+    title: About
+  # - slug: resume
+  #   title: Resume
+  # - slug: skills
+  #   title: Skills
+  - slug: blog
+    title: Blog
+
+exclude: ["gulp", "node_modules", "bower", "bower_components", "config.rb", "src", "Gemfile", "Gemfile.lock", ".rvmrc", ".rbenv-version", "package.json", "gulpfile.js", "README.md", "Rakefile", "changelog.md"]
