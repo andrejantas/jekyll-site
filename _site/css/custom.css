@@ -15,10 +15,6 @@ body {
 	overflow-x: hidden;
 }
 
-header {
-	margin-top: 50px;
-}
-
 a {
     color: #000;
     text-decoration: none;
@@ -707,8 +703,8 @@ body.cv {
   border-bottom: 1px solid rgba(222,222,222,0.5);
 }
 
-header {
-  margin-top: 50px;
+.site-header a {
+  font-size: 2.25rem;
 }
 
 header .container {
@@ -718,3 +714,42 @@ header .container {
   padding-left: .75em;
   padding-right: .75em;
 }
+
+.site-header {
+    background-color: #fff;
+    padding: 1.5em 0;
+    margin-bottom: 1.5em;
+    border-bottom: 1px solid rgba(222, 222, 222, 0.5)
+}
+.site-header h1 {
+    margin: 0;
+    padding: 5px 0;
+    float: left;
+    font-weight: 400;
+    font-size: 1.25rem
+}
+.site-header h1 span {
+    color: #337ab7
+}
+.site-header h1,
+.site-header a {
+    text-transform: lowercase
+}
+.site-header .navbar {
+    float: right
+}
+.site-header a {
+    color: #9a9a9a
+}
+.site-header a:hover,
+.site-header a:focus,
+.site-header a:active {
+    color: #232323
+}
+@media screen and (max-width: 480px) {
+    .site-header .container {
+        padding-left: 1.5em;
+        padding-right: 1.5em
+    }
+}
+.sliding-
