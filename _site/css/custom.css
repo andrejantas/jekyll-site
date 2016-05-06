@@ -15,6 +15,9 @@ body {
 	overflow-x: hidden;
 }
 
+header {
+	margin-top: 50px;
+}
 
 a {
     color: #000;
@@ -380,6 +383,41 @@ nav .active a {
     background-color: #000;
 }
 
+/* Header ------------------------------------------------- */
+
+.face {
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+}
+
+.header-name {
+    background-color: #000;
+    padding: 5px 17px;
+    display: inline-block;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    border-left: 3px solid #f00;
+    border-right: 3px solid #0045ff;
+}
+
+.header-title {
+    font-size: 16px;
+}
+
+.header-subtitle {
+    padding-top: 25px;
+    font-style: italic;
+    margin-bottom: 100px;
+}
+
+/* Profile ------------------------------------------------- */
+
 .profile .title .glyphicon{
     background-color: #9300ff;
 }
@@ -662,116 +700,21 @@ body.cv {
   background: #fff url("../images/bg-pattern.png");
 }
 
-
 .site-header {
-    background-color: #fff;
-    padding: 1.5em 0;
-    margin-bottom: 1.5em;
-    border-bottom: 1px solid rgba(222, 222, 222, 0.5)
+  background-color: #fff;
+  padding: 1.5em 0;
+  margin-bottom: 1.5em;
+  border-bottom: 1px solid rgba(222,222,222,0.5);
 }
-.site-header h1 {
-    margin: 0;
-    padding: 5px 0;
-    float: left;
-    font-weight: 400;
-    font-size: 2.25rem
+
+header {
+  margin-top: 50px;
 }
-.site-header h1 span {
-    color: #337ab7
-}
-.site-header h1,
-.site-header a {
-    text-transform: lowercase
-}
-.site-header .navbar {
-    float: right
-}
-.site-header a {
-    color: #9a9a9a
-}
-.site-header .container {
+
+header .container {
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
   padding-left: .75em;
   padding-right: .75em;
-}
-.site-header a:hover,
-.site-header a:focus,
-.site-header a:active {
-    color: #232323
-}
-@media screen and (max-width: 480px) {
-    .site-header .container {
-        padding-left: 1.5em;
-        padding-right: 1.5em
-    }
-}
-
-.site-header::after,
-.social::after,
-.pagination::after,
-.highlight::after {
-    clear: both;
-    content: "";
-    display: table
-}
-
-@media screen and (max-width: 480px) {
-    .sliding-panel-content {
-        border-top: 5px solid #337ab7;
-        position: fixed;
-        top: 0;
-        right: auto;
-        bottom: 0;
-        left: 0;
-        height: 100%;
-        width: 220px;
-        -webkit-transform: translateX(-100%);
-        -moz-transform: translateX(-100%);
-        -ms-transform: translateX(-100%);
-        -o-transform: translateX(-100%);
-        transform: translateX(-100%);
-        -webkit-transition: all 0.25s linear;
-        -moz-transition: all 0.25s linear;
-        transition: all 0.25s linear;
-        background: #fff;
-        -webkit-overflow-scrolling: touch;
-        overflow-y: auto;
-        z-index: 999999
-    }
-    .sliding-panel-content.is-visible {
-        -webkit-transform: translateX(0);
-        -moz-transform: translateX(0);
-        -ms-transform: translateX(0);
-        -o-transform: translateX(0);
-        transform: translateX(0)
-    }
-    .sliding-panel-fade-screen {
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        -webkit-transition: all 0.15s ease-out 0s;
-        -moz-transition: all 0.15s ease-out 0s;
-        transition: all 0.15s ease-out 0s;
-        background: #000;
-        opacity: 0;
-        visibility: hidden;
-        z-index: 9999
-    }
-    .sliding-panel-fade-screen.is-visible {
-        opacity: 0.4;
-        visibility: visible
-    }
-    .sliding-panel-close {
-        cursor: pointer
-    }
-}
-
-@media screen and (min-width: 480px) {
-    .sliding-panel-button {
-        display: none
-    }
 }
