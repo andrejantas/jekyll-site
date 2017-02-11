@@ -5,9 +5,98 @@
     <description>My personal pages</description>
     <link>http://antas.cz/</link>
     <atom:link href="http://antas.cz/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 06 May 2016 21:43:54 +0200</pubDate>
-    <lastBuildDate>Fri, 06 May 2016 21:43:54 +0200</lastBuildDate>
+    <pubDate>Sun, 12 Feb 2017 00:19:28 +0100</pubDate>
+    <lastBuildDate>Sun, 12 Feb 2017 00:19:28 +0100</lastBuildDate>
     <generator>Jekyll v3.1.1</generator>
+    
+      <item>
+        <title>Rails on Wercker with redis running</title>
+        <description>&lt;p&gt;Hi guys, I know I have been silent for kinda a looong long time, I had loads on my mind, but now new year new resolutions I am not going to keep up with, but one of them I should, because I got loads here that I was dealing with and was not the easiest, but got it solved.&lt;/p&gt;
+
+&lt;p&gt;First on the agenda is my overuse of free or really cheap but really nice solutions. Today is CI. I hope all of us are familiar with CI, I am talking about continuous integration here. To sum it up basically runner that goes through your test and rubocop and such stuff each time you push to git. Proven very useful in many cases and must have when you develop something and you want to keep an eye on quality of your work.&lt;/p&gt;
+
+&lt;p&gt;Today is not the time to share all the tools I use for development although couple of things will be visible in config over here, but I want to talk about CI I use for one of my free time love which is this coffee subscription - &lt;a href=&quot;https://inboxcoffee.cz&quot;&gt;inboxcoffee.cz&lt;/a&gt; which I work on in my free time.&lt;/p&gt;
+
+&lt;p&gt;What I use is &lt;a href=&quot;http://www.wercker.com/&quot;&gt;wercker.com/&lt;/a&gt;. Wercker does not seem to me very popular or such, but for myself is still free even for private github repositories and serves the purpose well.&lt;/p&gt;
+
+&lt;p&gt;One of the pitfalls of it is the setup. I am one of those that want to do all I do without any description or how to, because I mean why, they mentioned is user friendly so I should be able to set it up… well we will see about that in a bit.&lt;/p&gt;
+
+&lt;p&gt;I am running pretty much standard stack on the page, you can check some of it out here: &lt;a href=&quot;https://stackshare.io/redrick/inbox-coffee-company&quot;&gt;stackshare.io/redrick/inbox-coffee-company&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;So lets have a look here, running ruby 2.3… check not a problem, wercker work with docker images, so we can move on. Using postgres as service is also no problem as you may be used from any other CI. But then redis comes in, I am testing also functionality of things going through sidekiq, mocking them and so, but as it is recurring subscription service, some of them are run 17x quicker than real time and other fun stuff to assure quality of service. Nevermind that weird stuff I just said, even for smoke testing I need redis running right…. well not as straight forward as I thought there, but works at present time just fine.&lt;/p&gt;
+
+&lt;p&gt;Let me walk you through it, but first I will just paste it here:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;ss&quot;&gt;services&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;
+&lt;span class=&quot;ss&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;install&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;packages&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;ss&quot;&gt;packages&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tools&lt;/span&gt;
+
+    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;script&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;start&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;
+      &lt;span class=&quot;ss&quot;&gt;code&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;daemonize&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cli&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ping&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;basically what I had to do there is to install redis as package in the ruby container I run tests as first step in the build process and next daemonize it (as bad as it may seem) which would probably help me if I was about to use it restart and so on but also automatically starts the instance which is exactly what we need right here. And yeah well so you can feel good, you know the drill, sen ping to redis-cli and if it’s running answers with funny PONG. and that is all. I myself am a mac guy so that is maybe why I had to google even simple solution like this, but we learn as we go.&lt;/p&gt;
+
+&lt;p&gt;So finally full config to run your tests including redis may look like this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;ss&quot;&gt;ruby&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;ss&quot;&gt;box&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ruby&lt;/span&gt;
+&lt;span class=&quot;ss&quot;&gt;services&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;postgres&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;
+&lt;span class=&quot;ss&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;install&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;packages&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;ss&quot;&gt;packages&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tools&lt;/span&gt;
+
+    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;script&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;start&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;
+      &lt;span class=&quot;ss&quot;&gt;code&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;daemonize&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cli&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ping&lt;/span&gt;
+
+    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bundle&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;install&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;yml&lt;/span&gt;
+
+    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;script&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Set&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;up&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;
+      &lt;span class=&quot;ss&quot;&gt;code&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bundle&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rake&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;db&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;load&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;RAILS_ENV&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;
+
+    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;script&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rspec&lt;/span&gt;
+      &lt;span class=&quot;ss&quot;&gt;code&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bundle&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rspec&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;OK, my real config includes more than 60 lines, so probably I should walk you though it whole, but this one serves ok for purpose of demonstrating what does it take to run rspec tests including redis on wercker.&lt;/p&gt;
+
+&lt;p&gt;Happy coding and see you all next time.&lt;/p&gt;
+</description>
+        <pubDate>Mon, 06 Feb 2017 01:21:00 +0100</pubDate>
+        <link>http://antas.cz/rails-on-wercker-with-redis-running</link>
+        <guid isPermaLink="true">http://antas.cz/rails-on-wercker-with-redis-running</guid>
+        
+        <category>rails</category>
+        
+        <category>redis</category>
+        
+        <category>test</category>
+        
+        <category>ci</category>
+        
+        
+        <category>rails</category>
+        
+        <category>ci</category>
+        
+        <category>test</category>
+        
+        <category>redis</category>
+        
+      </item>
     
       <item>
         <title>First impressions</title>
