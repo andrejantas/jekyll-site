@@ -5,9 +5,103 @@
     <description>My personal pages</description>
     <link>http://antas.cz/</link>
     <atom:link href="http://antas.cz/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 12 Feb 2017 00:21:07 +0100</pubDate>
-    <lastBuildDate>Sun, 12 Feb 2017 00:21:07 +0100</lastBuildDate>
+    <pubDate>Sun, 12 Feb 2017 00:27:41 +0100</pubDate>
+    <lastBuildDate>Sun, 12 Feb 2017 00:27:41 +0100</lastBuildDate>
     <generator>Jekyll v3.1.1</generator>
+    
+      <item>
+        <title>SSH on MacOS Sierra</title>
+        <description>&lt;p&gt;s a shout in the dark I have to write this…. You cannot fathom what I just survived with setting up some stuff after “tiny loss of data” and recovery from timemachine backup. As the story goes I got my stuff back, but somehow iTerm got a bit off so I started over with it. Fresh install and so, I thought it is going to be easier… As far as brew that I use on MacOS goes and libraries I was missing from the backup all went well…&lt;/p&gt;
+
+&lt;p&gt;Trouble started once I punched in &lt;code&gt;ssh SERVERNAME&lt;/code&gt; to log into our company development machine…&lt;/p&gt;
+
+&lt;p&gt;First I started off with new annoying problem that happens above macOS 10.12. Mac simply forgets your identities.
+Before it was enough to get him to use Keychain Access by running &lt;code&gt;ssh -K /path/to/key&lt;/code&gt; but that does not work anymore and according to what I read through SO it seems it desired behaviour by apple… well not by us right ?&lt;/p&gt;
+
+&lt;p&gt;So starting here, we need to create file &lt;code&gt;~/.ssh/config&lt;/code&gt; if you got none, that is the place for the configuration. Here the rules go: server name and under it indented by tab all the options/properties or how you call them. So here I found out that I can mimic the old behaviour by only adding couple things in config. Just for someone that does not know, the old behaviour means that you mac keeps your identitties between restarts. And the piece of code is here:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Host&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;UseKeychain&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;AddKeysToAgent&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;IdentityFile&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/.ssh/i&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d_rsa&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As simple as the config can be right? Well not quiet yet. We are going to have other trouble. How I am used to work is that from the remote server I open apps that require window server (X11) to be running to display output from the dev machine that I am using. so lets add X11 forwarding there…&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Host&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;ForwardX11&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;UseKeychain&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;AddKeysToAgent&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;IdentityFile&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/.ssh/i&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d_rsa&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And of course this will not work out for you if you do not have X11 installed on your mac, now is XQuartz app that you can just google away, because you need to use most up to date one anyway. (just a hint: get it from here https://www.xquartz.org/)&lt;/p&gt;
+
+&lt;p&gt;So by now X11 forwarding should be working… well it’s not, you will probably meet one of these:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Warning: untrusted X11 forwarding setup failed: xauth key data not generated&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;This first one can be easily solved by adding a line in config:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;ForwardX11Trusted&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Which now leaves us with warning:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Warning: No xauth data; using fake authentication data for X11 forwarding.&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;That we can get rid off by pointing to right xauth location since it has changed in new version of macOS and no one told us specifically… well maybe they did, but sure as hell nobody reads changelogs that are couple pages long… So this line will save the day here:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;XAuthLocation&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/usr/&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;X11&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xauth&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And that should be it for the setup. So I go to dev machine, seems ok no warning on login, X11 opens up when I run something that requires window server, but once I get to &lt;code&gt;git pull&lt;/code&gt; it goes off with:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Permission denied (publickey)&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Well of course it will since on remote I got no ssh keys and instead I forward mine, so I need to also add that in the config there.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;ForwardAgent&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;ok we are good to go now. So at the end our &lt;code&gt;~/.ssh/config&lt;/code&gt; looks like this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Host&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;ForwardX11Trusted&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;ForwardX11&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;ForwardAgent&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;UseKeychain&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;AddKeysToAgent&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;IdentityFile&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/.ssh/i&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d_rsa&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;XAuthLocation&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/usr/&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;X11&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xauth&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Which is fair enough right, but to add a few extra lines, mine looks more or less like this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Host&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;ForwardX11Trusted&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;ForwardX11&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;Compression&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;CompressionLevel&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;ForwardAgent&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;UseKeychain&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;AddKeysToAgent&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;IdentityFile&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/.ssh/i&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d_rsa&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;XAuthLocation&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/usr/&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;X11&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xauth&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;ServerAliveInterval&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;60&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;What is extra there is just Compression turned on while not everywhere I got high speed internet and I use vim a lot these days, so it really sucks once vim is lagging while you are writing. And also the last line is pinging server I am connecting to every 60 second to ensure I am not logged off for no good reason (for example talking to people about stuff I am doing…).&lt;/p&gt;
+
+&lt;p&gt;And that concludes the ssh on macOS Sierra where you have to manually paste in configs to make it work like you were used to… But I always calm myself by loads of advantages the system has except making my life more painful by googling things that were working before last update. I hope I helped somebody with this. Happy coding :)&lt;/p&gt;
+</description>
+        <pubDate>Sun, 12 Feb 2017 00:21:00 +0100</pubDate>
+        <link>http://antas.cz/ssh-on-macos-sierra</link>
+        <guid isPermaLink="true">http://antas.cz/ssh-on-macos-sierra</guid>
+        
+        <category>ssh</category>
+        
+        <category>macos</category>
+        
+        
+        <category>ssh</category>
+        
+        <category>macos</category>
+        
+      </item>
     
       <item>
         <title>Rails on Wercker with redis running</title>
