@@ -9,8 +9,8 @@
     <meta name="description" content="Hey guys, so I am finally moving over from really nice, but at the end quiet painful experience with publify.">
 
     <link rel="stylesheet" href="/css/main.css">
-    <link rel="canonical" href="http://antas.cz/first-impressions">
-    <link rel="alternate" type="application/rss+xml" title="Andrej Antaš" href="http://antas.cz/feed.xml" />
+    <link rel="canonical" href="http://localhost:4000/first-impressions">
+    <link rel="alternate" type="application/rss+xml" title="Andrej Antaš" href="http://localhost:4000/feed.xml" />
   </head>
 
   <body>
@@ -89,7 +89,7 @@
 
 <p>and you see:</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">desc</span> <span class="s2">&quot;Generate and publish blog to gh-pages&quot;</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="n">desc</span> <span class="s2">&quot;Generate and publish blog to gh-pages&quot;</span>
 <span class="n">task</span> <span class="ss">:publish</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:generate</span><span class="o">]</span> <span class="k">do</span>
   <span class="no">Dir</span><span class="o">.</span><span class="n">mktmpdir</span> <span class="k">do</span> <span class="o">|</span><span class="n">tmp</span><span class="o">|</span>
     <span class="n">cp_r</span> <span class="s2">&quot;_site/.&quot;</span><span class="p">,</span> <span class="n">tmp</span>
@@ -115,7 +115,7 @@
 
 <p>So it will look like this:</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">desc</span> <span class="s2">&quot;Generate and publish blog to gh-pages&quot;</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="n">desc</span> <span class="s2">&quot;Generate and publish blog to gh-pages&quot;</span>
 <span class="n">task</span> <span class="ss">:publish</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:generate</span><span class="o">]</span> <span class="k">do</span>
   <span class="no">Dir</span><span class="o">.</span><span class="n">mktmpdir</span> <span class="k">do</span> <span class="o">|</span><span class="n">tmp</span><span class="o">|</span>
     <span class="n">cp_r</span> <span class="s2">&quot;_site/.&quot;</span><span class="p">,</span> <span class="n">tmp</span>
@@ -160,7 +160,7 @@
     <div id="disqus_thread"></div>
     <script>
       var disqus_config = function() {
-        this.page.url = 'http://antas.cz';
+        this.page.url = 'http://localhost:4000';
         this.page.identifier = '/first-impressions';
       };
       (function() {

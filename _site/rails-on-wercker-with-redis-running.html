@@ -9,8 +9,8 @@
     <meta name="description" content="Hi guys, I know I have been silent for kinda a looong long time, I had loads on my mind, but now new year new resolutions I am not going to keep up with, but...">
 
     <link rel="stylesheet" href="/css/main.css">
-    <link rel="canonical" href="http://antas.cz/rails-on-wercker-with-redis-running">
-    <link rel="alternate" type="application/rss+xml" title="Andrej Antaš" href="http://antas.cz/feed.xml" />
+    <link rel="canonical" href="http://localhost:4000/rails-on-wercker-with-redis-running">
+    <link rel="alternate" type="application/rss+xml" title="Andrej Antaš" href="http://localhost:4000/feed.xml" />
   </head>
 
   <body>
@@ -79,7 +79,7 @@
 
 <p>Let me walk you through it, but first I will just paste it here:</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="ss">services</span><span class="p">:</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="ss">services</span><span class="p">:</span>
   <span class="o">-</span> <span class="n">redis</span>
 <span class="ss">build</span><span class="p">:</span>
   <span class="ss">steps</span><span class="p">:</span>
@@ -96,7 +96,7 @@
 
 <p>So finally full config to run your tests including redis may look like this:</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="ss">ruby</span><span class="p">:</span> <span class="mi">2</span><span class="o">.</span><span class="mi">3</span><span class="o">.</span><span class="mi">1</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="ss">ruby</span><span class="p">:</span> <span class="mi">2</span><span class="o">.</span><span class="mi">3</span><span class="o">.</span><span class="mi">1</span>
 <span class="ss">box</span><span class="p">:</span> <span class="n">ruby</span>
 <span class="ss">services</span><span class="p">:</span>
   <span class="o">-</span> <span class="n">postgres</span>
@@ -138,7 +138,7 @@
     <div id="disqus_thread"></div>
     <script>
       var disqus_config = function() {
-        this.page.url = 'http://antas.cz';
+        this.page.url = 'http://localhost:4000';
         this.page.identifier = '/rails-on-wercker-with-redis-running';
       };
       (function() {
