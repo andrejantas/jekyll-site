@@ -12,17 +12,17 @@ tags: ruby
 
 ---
 
-So as a quick one I found out some time ago that I need to migrate 'wiki' like
-information from one system to postres DB... That basically meant for me that I
-need to crawl those pages cut out paragraphs I want and move only those.
+So as a quick one I found out some time ago that I need to migrate `wiki` like
+information from one system to postgres DB... That basically meant for me that I
+need to crawl those pages, cut out paragraphs I want and move only those.
 
 And there you can see what I found out... Now I don't say is the right solution,
 but for sure quick and kinda neat for what it does :)
 
 So first of all just a small notice, this was just one time rake task that I
-removed afterward since it served no purpose anymore, but was quick to write
+removed afterward since it served no purpose no more, but was quick to write
 way to move all that data from wiki without actually hiring two people for
-weekend to copy paste it... We are developers, there is nothign script cannot
+weekend to copy paste it... We are developers, there is nothing script cannot
 do for us right?
 
 So here I exactly as I described needed to cut out only paragraphs that are
@@ -40,7 +40,7 @@ stop = response.search("hr").first
 {% endhighlight %}
 
 Notice, that these are presented as array to you, but in my case I am sure
-there is only one of each on the page, so I can affort to just go ahead and
+there is only one of each on the page, so I can afford to just go ahead and
 call `.first` on two entities beginning and ending my paragraph.
 
 And now just a nifty method getting all between and we are good to go :)
@@ -54,7 +54,8 @@ end
 And there goes recursion, where I am filling array with next and next element
 untill I hit the last one. You could do with `while`, but for me seems nice to
 use recursion. In my daily job I hardly ever meet it since it could be tricky and not
-so easy to debug if you make a mistake. But in this case is just nicer.
+so easy to debug if you make a mistake. But in this case is just nicer and fits
+one line :)
 
 Ok so here we have it. We call this bad boy with our two elements and are good
 to go and since I am am from here forward in app using WYSIWYG editor I want to
