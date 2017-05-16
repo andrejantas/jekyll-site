@@ -3,10 +3,10 @@
   <channel>
     <title>Andrej Antaš</title>
     <description>My personal pages</description>
-    <link>http://localhost:4000/</link>
-    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 16 May 2017 22:47:35 +0200</pubDate>
-    <lastBuildDate>Tue, 16 May 2017 22:47:35 +0200</lastBuildDate>
+    <link>http://antas.cz/</link>
+    <atom:link href="http://antas.cz/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Tue, 16 May 2017 22:48:06 +0200</pubDate>
+    <lastBuildDate>Tue, 16 May 2017 22:48:06 +0200</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -63,8 +63,8 @@ so I save it like string:&lt;/p&gt;
 &lt;p&gt;Thank you for reading and hopefully it was usefull for somebody :)&lt;/p&gt;
 </description>
         <pubDate>Sun, 12 Mar 2017 00:21:00 +0100</pubDate>
-        <link>http://localhost:4000/recursion-with-nokogiri-are-friends</link>
-        <guid isPermaLink="true">http://localhost:4000/recursion-with-nokogiri-are-friends</guid>
+        <link>http://antas.cz/recursion-with-nokogiri-are-friends</link>
+        <guid isPermaLink="true">http://antas.cz/recursion-with-nokogiri-are-friends</guid>
         
         <category>ruby</category>
         
@@ -153,8 +153,8 @@ Before it was enough to get him to use Keychain Access by running &lt;code&gt;ss
 &lt;p&gt;And that concludes the ssh on macOS Sierra where you have to manually paste in configs to make it work like you were used to… But I always calm myself by loads of advantages the system has except making my life more painful by googling things that were working before last update. I hope I helped somebody with this. Happy coding :)&lt;/p&gt;
 </description>
         <pubDate>Sun, 12 Feb 2017 00:21:00 +0100</pubDate>
-        <link>http://localhost:4000/ssh-on-macos-sierra</link>
-        <guid isPermaLink="true">http://localhost:4000/ssh-on-macos-sierra</guid>
+        <link>http://antas.cz/ssh-on-macos-sierra</link>
+        <guid isPermaLink="true">http://antas.cz/ssh-on-macos-sierra</guid>
         
         <category>ssh</category>
         
@@ -234,8 +234,8 @@ Before it was enough to get him to use Keychain Access by running &lt;code&gt;ss
 &lt;p&gt;Happy coding and see you all next time.&lt;/p&gt;
 </description>
         <pubDate>Mon, 06 Feb 2017 01:21:00 +0100</pubDate>
-        <link>http://localhost:4000/rails-on-wercker-with-redis-running</link>
-        <guid isPermaLink="true">http://localhost:4000/rails-on-wercker-with-redis-running</guid>
+        <link>http://antas.cz/rails-on-wercker-with-redis-running</link>
+        <guid isPermaLink="true">http://antas.cz/rails-on-wercker-with-redis-running</guid>
         
         <category>rails</category>
         
@@ -345,8 +345,8 @@ Before it was enough to get him to use Keychain Access by running &lt;code&gt;ss
 &lt;p&gt;Happy coding everybody :)&lt;/p&gt;
 </description>
         <pubDate>Sun, 06 Mar 2016 21:51:00 +0100</pubDate>
-        <link>http://localhost:4000/first-impressions</link>
-        <guid isPermaLink="true">http://localhost:4000/first-impressions</guid>
+        <link>http://antas.cz/first-impressions</link>
+        <guid isPermaLink="true">http://antas.cz/first-impressions</guid>
         
         <category>jekyll</category>
         
