@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Removing STI and preserving API version?</title>
+    <meta name="description" content="Hi guys, so today it is kind of funny thing what I was and will be solving for a bit now at work…So the main problem is that we have functional a helpful int...">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="canonical" href="http://localhost:4000/removing-sti-and-preserving-api-version">
+    <link rel="alternate" type="application/rss+xml" title="Andrej Antaš" href="http://localhost:4000/feed.xml" />
+  </head>
+
+  <body>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-74779905-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+    <main>
+      <header class="site-header">
+  <div class="container">
+    <h1><a href="/">antas<span>.cz</span></a></h1>
+
+    <button type="button" class="sliding-panel-button">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="navbar sliding-panel-content">
+      <ul>
+        
+          <li><a href="/about" title="About">About</a></li>
+        
+          <li><a href="/cv" title="CV">CV</a></li>
+        
+          <li><a href="/blog" title="Blog">Blog</a></li>
+        
+        <li><a href="/feed.xml" target="_blank"><i class="icon icon-feed"></i></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="sliding-panel-fade-screen"></div>
+
+
+      <div class="container">
+        <article role="article" class="post">
+
+  <div class="card">
+    <header class="post-header">
+      <h1 class="post-title">Removing STI and preserving API version?</h1>
+      <p class="post-meta">Apr 15, 2017</p>
+    </header>
+
+    <div class="post-content">
+      <p>Hi guys, so today it is kind of funny thing what I was and will be solving for a bit now at work…
+So the main problem is that we have functional a helpful intranet where many things are represented and mainly there is a wee bit of overuse of STI. Which many would argue is horrible mistake, but sometimes really really makes sense…</p>
+
+<p>I am not here to make a case for it because in this particular case it also made completely no sense… But here it was gradual changes to both models represented by the common table. So I reached the point where almostly only thing they had in common was the actual table there… so STI off you go right ? Well it is not as easy as that, there are many many tutorials and blog posts to help you get rid of STI even if you have it there for a while (in my case 6 years probably more…), for example these:</p>
+
+<p><a href="https://about.futurelearn.com/blog/refactoring-rails-sti/">FutureLearn article</a></p>
+
+<p><a href="http://blog.arkency.com/2013/07/sti/">Arkency article</a></p>
+
+<p>They solve and show you how to solve some problems right?</p>
+
+<p>But here is my case… You have roundup of older and nicely functional tools that use this apps API to get your base STI model with ID…. since it is STI there is no way IDs of one or the other model inheriting from base are going to be same right ? So this way you don’t really have to have API for each model from STI, base is really enough since you are able to find it by ID.</p>
+
+<p>OK but now I tore it apart, is two tables now and this way my IDs will meet and there is a problem right there, even if I create myself nice facade to search above these two models I am not able to find the right one by ID because it will result in two records each time, but my user only wants one…</p>
+
+<p>So first of all what I did is preserve existing IDs, so by the time I migrate no two ids meet, that is a given from situation before and then I worked out that best would be to let these two tables share common sequence in this version of API and with the new one I will have to rewrite couple tools. But interesting thing is how really easy that was:</p>
+
+<figure class="highlight"><pre><code class="language-sql" data-lang="sql"><span></span><span class="k">CREATE</span> <span class="n">SEQUENCE</span> <span class="n">common_base_id_seq</span> <span class="k">START</span> <span class="k">WITH</span> <span class="mi">50000</span><span class="p">;</span></code></pre></figure>
+
+<p>This way I just set up some common sequence I could use, then I just altered existing ones in my tables:</p>
+
+<figure class="highlight"><pre><code class="language-sql" data-lang="sql"><span></span><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">breads</span> <span class="k">ALTER</span> <span class="k">COLUMN</span> <span class="n">id</span> <span class="k">SET</span> <span class="k">DEFAULT</span> <span class="n">nextval</span><span class="p">(</span><span class="s1">&#39;common_base_id_seq&#39;</span><span class="p">);</span>
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">cucumbers</span> <span class="k">ALTER</span> <span class="k">COLUMN</span> <span class="n">id</span> <span class="k">SET</span> <span class="k">DEFAULT</span> <span class="n">nextval</span><span class="p">(</span><span class="s1">&#39;common_base_id_seq&#39;</span><span class="p">);</span></code></pre></figure>
+
+<p>What this will do for me now is that it will ensure between oth these tables ID will be unique.</p>
+
+<p>I can sleep nice now and continue little bits here and there preserving my API version as it was preparing for the changes to come in future.</p>
+
+<p>OK so we are all set, happy coding then and see you around.</p>
+
+    </div>
+
+    
+<hr>
+
+<aside id="comments" class="disqus">
+  <div class="container">
+    <h3><i class="icon icon-comments-o"></i> Comments</h3>
+    <div id="disqus_thread"></div>
+    <script>
+      var disqus_config = function() {
+        this.page.url = 'http://localhost:4000';
+        this.page.identifier = '/removing-sti-and-preserving-api-version';
+      };
+      (function() {
+        var d = document,
+        s = d.createElement('script');
+        s.src = '//antascz.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  </div>
+</aside>
+
+  </div>
+
+</article>
+
+      </div>
+
+      <footer class="site-footer">
+  <div class="container">
+    <ul class="social">
+  <li><a href="http://github.com/redrick" target="_blank"><i class="icon icon-github"></i></a></li>
+  <li><a href="http://twitter.com/AndrejAntas" target="_blank"><i class="icon icon-twitter"></i></a></li>
+  <li><a href="http://facebook.com/redricko" target="_blank"><i class="icon icon-facebook"></i></a></li>
+  <li><a href="https://cz.linkedin.com/in/andrejantas" target="_blank"><i class="icon icon-linkedin"></i></a></li>
+</ul>
+    <p class="txt-medium-gray">
+      <small>&copy;2017 All rights reserved. Made with <a href="http://jekyllrb.com/" target="_blank">Jekyll</a> and ♥</small>
+    </p>
+  </div>
+</footer>
+
+
+      <a href="http://github.com/redrick/redrick.github.io" target="_blank" class="github-corner"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#337ab7; color:#fff; position: absolute; top: 0; border: 0; right: 0;"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+      <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+      <script>
+      $(document).ready(function() {
+        $('.sliding-panel-button,.sliding-panel-fade-screen,.sliding-panel-close').on('click touchstart',function (e) {
+          $('.sliding-panel-content,.sliding-panel-fade-screen').toggleClass('is-visible');
+          e.preventDefault();
+        });
+      });
+      </script>
+    </main>
+  </body>
+</html>
