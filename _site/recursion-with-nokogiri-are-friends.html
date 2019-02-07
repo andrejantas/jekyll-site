@@ -63,7 +63,7 @@
     </header>
 
     <div class="post-content">
-      <p>So as a quick one I found out some time ago that I need to migrate <code>wiki</code> like
+      <p>So as a quick one I found out some time ago that I need to migrate <code class="highlighter-rouge">wiki</code> like
 information from one system to postgres DB… That basically meant for me that I
 need to crawl those pages, cut out paragraphs I want and move only those.</p>
 
@@ -81,25 +81,25 @@ essential for me, so half of the information there was redundant anyway.</p>
 
 <p>So long story short I needed only to find my two entities between which is my
 desired text. As I want to provide you more examples, so lets say we are
-looking for paragraph that starts with link with text ‘Hello’ and ends with <code>hr</code> tag.
+looking for paragraph that starts with link with text ‘Hello’ and ends with <code class="highlighter-rouge">hr</code> tag.
 (note I am getting response from Net::HTTP)</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="n">response</span> <span class="o">=</span> <span class="no">Nokogiri</span><span class="o">::</span><span class="no">HTML</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
-<span class="n">start</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;a:contains(&#39;Hello&#39;)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
-<span class="n">stop</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;hr&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">first</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">response</span> <span class="o">=</span> <span class="no">Nokogiri</span><span class="o">::</span><span class="no">HTML</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="nf">body</span><span class="p">)</span>
+<span class="n">start</span> <span class="o">=</span> <span class="n">response</span><span class="p">.</span><span class="nf">search</span><span class="p">(</span><span class="s2">"a:contains('Hello')"</span><span class="p">).</span><span class="nf">first</span>
+<span class="n">stop</span> <span class="o">=</span> <span class="n">response</span><span class="p">.</span><span class="nf">search</span><span class="p">(</span><span class="s2">"hr"</span><span class="p">).</span><span class="nf">first</span></code></pre></figure>
 
 <p>Notice, that these are presented as array to you, but in my case I am sure
 there is only one of each on the page, so I can afford to just go ahead and
-call <code>.first</code> on two entities beginning and ending my paragraph.</p>
+call <code class="highlighter-rouge">.first</code> on two entities beginning and ending my paragraph.</p>
 
 <p>And now just a nifty method getting all between and we are good to go :)</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="k">def</span> <span class="nf">collect_between</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
-  <span class="n">start</span> <span class="o">==</span> <span class="n">stop</span> <span class="p">?</span> <span class="o">[</span><span class="n">start</span><span class="o">]</span> <span class="p">:</span> <span class="o">[</span><span class="n">start</span><span class="p">,</span> <span class="o">*</span><span class="n">collect_between</span><span class="p">(</span><span class="n">start</span><span class="o">.</span><span class="n">next_element</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span><span class="o">]</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">collect_between</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
+  <span class="n">start</span> <span class="o">==</span> <span class="n">stop</span> <span class="p">?</span> <span class="p">[</span><span class="n">start</span><span class="p">]</span> <span class="p">:</span> <span class="p">[</span><span class="n">start</span><span class="p">,</span> <span class="o">*</span><span class="n">collect_between</span><span class="p">(</span><span class="n">start</span><span class="p">.</span><span class="nf">next_element</span><span class="p">,</span> <span class="n">stop</span><span class="p">)]</span>
 <span class="k">end</span></code></pre></figure>
 
 <p>And there goes recursion, where I am filling array with next and next element
-untill I hit the last one. You could do with <code>while</code>, but for me seems nice to
+untill I hit the last one. You could do with <code class="highlighter-rouge">while</code>, but for me seems nice to
 use recursion. In my daily job I hardly ever meet it since it could be tricky and not
 so easy to debug if you make a mistake. But in this case is just nicer and fits
 one line :)</p>
@@ -109,8 +109,8 @@ to go and since I am am from here forward in app using WYSIWYG editor I want to
 store it as HTML that it was on the page and will apply similar styling to it
 so I save it like string:</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">collect_between</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
-<span class="n">result</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:to_html</span><span class="p">)</span><span class="o">.</span><span class="n">join</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">result</span> <span class="o">=</span> <span class="n">collect_between</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
+<span class="n">result</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:to_html</span><span class="p">).</span><span class="nf">join</span></code></pre></figure>
 
 <p>Thank you for reading and hopefully it was usefull for somebody :)</p>
 
@@ -155,7 +155,7 @@ so I save it like string:</p>
   <li><a href="https://cz.linkedin.com/in/andrejantas" target="_blank"><i class="icon icon-linkedin"></i></a></li>
 </ul>
     <p class="txt-medium-gray">
-      <small>&copy;2017 All rights reserved. Made with <a href="http://jekyllrb.com/" target="_blank">Jekyll</a> and ♥</small>
+      <small>&copy;2019 All rights reserved. Made with <a href="http://jekyllrb.com/" target="_blank">Jekyll</a> and ♥</small>
     </p>
   </div>
 </footer>

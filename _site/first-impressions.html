@@ -75,7 +75,7 @@
 
 <p>Made me think for a bit thou. How the theme is set up and prepared for you, it is not a setup you want to put into your USERNAME.github.io repository and I will explain why.</p>
 
-<p>I always really like to store my changes in git and this time if you did all from the readme, you found yourself in a place when every <code>rake publish</code> is doing <code>git push origin master --force</code> which is not really something you are going to appreciate.</p>
+<p>I always really like to store my changes in git and this time if you did all from the readme, you found yourself in a place when every <code class="highlighter-rouge">rake publish</code> is doing <code class="highlighter-rouge">git push origin master --force</code> which is not really something you are going to appreciate.</p>
 
 <p>So instead I placed repository with sources elsewhere and filled out info so it force pushes real repository USERNAME.github.io instead. Win Win.</p>
 
@@ -83,57 +83,57 @@
 
 <p>There you go, easily follow tutorial Github nice provides <a href="https://help.github.com/articles/setting-up-an-apex-domain/#configuring-a-records-with-your-dns-provider">here</a> but as you see I cannot create alias in my DNS admin, so I point two IPs to root which is not a real problem (well lasted hour to take effect…).</p>
 
-<p>Then you go and create that <code>CNAME</code> file they tell you to and you find out that with next <code>rake publish</code> the <code>CNAME</code> file is not anymore there… Well of course is not, you force pushed it there right?</p>
+<p>Then you go and create that <code class="highlighter-rouge">CNAME</code> file they tell you to and you find out that with next <code class="highlighter-rouge">rake publish</code> the <code class="highlighter-rouge">CNAME</code> file is not anymore there… Well of course is not, you force pushed it there right?</p>
 
-<p>So naturally you go have a look in <code>Rakefile</code> provided by the theme to see where the problem may be…</p>
+<p>So naturally you go have a look in <code class="highlighter-rouge">Rakefile</code> provided by the theme to see where the problem may be…</p>
 
 <p>and you see:</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="n">desc</span> <span class="s2">&quot;Generate and publish blog to gh-pages&quot;</span>
-<span class="n">task</span> <span class="ss">:publish</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:generate</span><span class="o">]</span> <span class="k">do</span>
-  <span class="no">Dir</span><span class="o">.</span><span class="n">mktmpdir</span> <span class="k">do</span> <span class="o">|</span><span class="n">tmp</span><span class="o">|</span>
-    <span class="n">cp_r</span> <span class="s2">&quot;_site/.&quot;</span><span class="p">,</span> <span class="n">tmp</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">desc</span> <span class="s2">"Generate and publish blog to gh-pages"</span>
+<span class="n">task</span> <span class="ss">:publish</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="ss">:generate</span><span class="p">]</span> <span class="k">do</span>
+  <span class="no">Dir</span><span class="p">.</span><span class="nf">mktmpdir</span> <span class="k">do</span> <span class="o">|</span><span class="n">tmp</span><span class="o">|</span>
+    <span class="n">cp_r</span> <span class="s2">"_site/."</span><span class="p">,</span> <span class="n">tmp</span>
 
-    <span class="n">pwd</span> <span class="o">=</span> <span class="no">Dir</span><span class="o">.</span><span class="n">pwd</span>
-    <span class="no">Dir</span><span class="o">.</span><span class="n">chdir</span> <span class="n">tmp</span>
+    <span class="n">pwd</span> <span class="o">=</span> <span class="no">Dir</span><span class="p">.</span><span class="nf">pwd</span>
+    <span class="no">Dir</span><span class="p">.</span><span class="nf">chdir</span> <span class="n">tmp</span>
 
-    <span class="nb">system</span> <span class="s2">&quot;git init&quot;</span>
-    <span class="nb">system</span> <span class="s2">&quot;git checkout --orphan </span><span class="si">#{</span><span class="no">GITHUB_REPO_BRANCH</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="nb">system</span> <span class="s2">&quot;git add .&quot;</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Site updated at </span><span class="si">#{</span><span class="no">Time</span><span class="o">.</span><span class="n">now</span><span class="o">.</span><span class="n">utc</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="nb">system</span> <span class="s2">&quot;git commit -am </span><span class="si">#{</span><span class="n">message</span><span class="o">.</span><span class="n">inspect</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="nb">system</span> <span class="s2">&quot;git remote add origin git@github.com:</span><span class="si">#{</span><span class="no">GITHUB_REPONAME</span><span class="si">}</span><span class="s2">.git&quot;</span>
-    <span class="nb">system</span> <span class="s2">&quot;git push origin </span><span class="si">#{</span><span class="no">GITHUB_REPO_BRANCH</span><span class="si">}</span><span class="s2"> --force&quot;</span>
+    <span class="nb">system</span> <span class="s2">"git init"</span>
+    <span class="nb">system</span> <span class="s2">"git checkout --orphan </span><span class="si">#{</span><span class="no">GITHUB_REPO_BRANCH</span><span class="si">}</span><span class="s2">"</span>
+    <span class="nb">system</span> <span class="s2">"git add ."</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="s2">"Site updated at </span><span class="si">#{</span><span class="no">Time</span><span class="p">.</span><span class="nf">now</span><span class="p">.</span><span class="nf">utc</span><span class="si">}</span><span class="s2">"</span>
+    <span class="nb">system</span> <span class="s2">"git commit -am </span><span class="si">#{</span><span class="n">message</span><span class="p">.</span><span class="nf">inspect</span><span class="si">}</span><span class="s2">"</span>
+    <span class="nb">system</span> <span class="s2">"git remote add origin git@github.com:</span><span class="si">#{</span><span class="no">GITHUB_REPONAME</span><span class="si">}</span><span class="s2">.git"</span>
+    <span class="nb">system</span> <span class="s2">"git push origin </span><span class="si">#{</span><span class="no">GITHUB_REPO_BRANCH</span><span class="si">}</span><span class="s2"> --force"</span>
 
-    <span class="no">Dir</span><span class="o">.</span><span class="n">chdir</span> <span class="n">pwd</span>
+    <span class="no">Dir</span><span class="p">.</span><span class="nf">chdir</span> <span class="n">pwd</span>
   <span class="k">end</span>
 <span class="k">end</span></code></pre></figure>
 
 <p>So yes it will disappear every time you do it because it overrides you previous commit, so your repository will stay one commit all the time.</p>
 
-<p>But there is nothing easier than fixing it, after you create your <code>tmp</code> and jump into it, lets create this <code>CNAME</code> file with domain in it and then commit and force push.</p>
+<p>But there is nothing easier than fixing it, after you create your <code class="highlighter-rouge">tmp</code> and jump into it, lets create this <code class="highlighter-rouge">CNAME</code> file with domain in it and then commit and force push.</p>
 
 <p>So it will look like this:</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="n">desc</span> <span class="s2">&quot;Generate and publish blog to gh-pages&quot;</span>
-<span class="n">task</span> <span class="ss">:publish</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:generate</span><span class="o">]</span> <span class="k">do</span>
-  <span class="no">Dir</span><span class="o">.</span><span class="n">mktmpdir</span> <span class="k">do</span> <span class="o">|</span><span class="n">tmp</span><span class="o">|</span>
-    <span class="n">cp_r</span> <span class="s2">&quot;_site/.&quot;</span><span class="p">,</span> <span class="n">tmp</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">desc</span> <span class="s2">"Generate and publish blog to gh-pages"</span>
+<span class="n">task</span> <span class="ss">:publish</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="ss">:generate</span><span class="p">]</span> <span class="k">do</span>
+  <span class="no">Dir</span><span class="p">.</span><span class="nf">mktmpdir</span> <span class="k">do</span> <span class="o">|</span><span class="n">tmp</span><span class="o">|</span>
+    <span class="n">cp_r</span> <span class="s2">"_site/."</span><span class="p">,</span> <span class="n">tmp</span>
 
-    <span class="n">pwd</span> <span class="o">=</span> <span class="no">Dir</span><span class="o">.</span><span class="n">pwd</span>
-    <span class="no">Dir</span><span class="o">.</span><span class="n">chdir</span> <span class="n">tmp</span>
+    <span class="n">pwd</span> <span class="o">=</span> <span class="no">Dir</span><span class="p">.</span><span class="nf">pwd</span>
+    <span class="no">Dir</span><span class="p">.</span><span class="nf">chdir</span> <span class="n">tmp</span>
 
-    <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;CNAME&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;YOURDOMAIN&quot;</span><span class="p">)</span> <span class="p">}</span>
+    <span class="no">File</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="s2">"CNAME"</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="n">f</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="s2">"YOURDOMAIN"</span><span class="p">)</span> <span class="p">}</span>
 
-    <span class="nb">system</span> <span class="s2">&quot;git init&quot;</span>
-    <span class="nb">system</span> <span class="s2">&quot;git checkout --orphan </span><span class="si">#{</span><span class="no">GITHUB_REPO_BRANCH</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="nb">system</span> <span class="s2">&quot;git add .&quot;</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Site updated at </span><span class="si">#{</span><span class="no">Time</span><span class="o">.</span><span class="n">now</span><span class="o">.</span><span class="n">utc</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="nb">system</span> <span class="s2">&quot;git commit -am </span><span class="si">#{</span><span class="n">message</span><span class="o">.</span><span class="n">inspect</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="nb">system</span> <span class="s2">&quot;git remote add origin git@github.com:</span><span class="si">#{</span><span class="no">GITHUB_REPONAME</span><span class="si">}</span><span class="s2">.git&quot;</span>
-    <span class="nb">system</span> <span class="s2">&quot;git push origin </span><span class="si">#{</span><span class="no">GITHUB_REPO_BRANCH</span><span class="si">}</span><span class="s2"> --force&quot;</span>
+    <span class="nb">system</span> <span class="s2">"git init"</span>
+    <span class="nb">system</span> <span class="s2">"git checkout --orphan </span><span class="si">#{</span><span class="no">GITHUB_REPO_BRANCH</span><span class="si">}</span><span class="s2">"</span>
+    <span class="nb">system</span> <span class="s2">"git add ."</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="s2">"Site updated at </span><span class="si">#{</span><span class="no">Time</span><span class="p">.</span><span class="nf">now</span><span class="p">.</span><span class="nf">utc</span><span class="si">}</span><span class="s2">"</span>
+    <span class="nb">system</span> <span class="s2">"git commit -am </span><span class="si">#{</span><span class="n">message</span><span class="p">.</span><span class="nf">inspect</span><span class="si">}</span><span class="s2">"</span>
+    <span class="nb">system</span> <span class="s2">"git remote add origin git@github.com:</span><span class="si">#{</span><span class="no">GITHUB_REPONAME</span><span class="si">}</span><span class="s2">.git"</span>
+    <span class="nb">system</span> <span class="s2">"git push origin </span><span class="si">#{</span><span class="no">GITHUB_REPO_BRANCH</span><span class="si">}</span><span class="s2"> --force"</span>
 
-    <span class="no">Dir</span><span class="o">.</span><span class="n">chdir</span> <span class="n">pwd</span>
+    <span class="no">Dir</span><span class="p">.</span><span class="nf">chdir</span> <span class="n">pwd</span>
   <span class="k">end</span>
 <span class="k">end</span></code></pre></figure>
 
@@ -143,7 +143,7 @@
 
 <p>Well to be precise there are two more things I noticed afterwards, because I had no DISQUS setup, so I had to go <a href="https://disqus.com/admin/create/">here</a> and create one so I have name to paste in here.</p>
 
-<p>The completely last thing was once creating new post (like this one here), I noticed, that it’s not displaying it… well what the hell I thought, but it was simple mistake of not including timezone with time given so it would probably appear after build in couple hours or so. But to be sure you are publishing what you want, set timezone, like i did: <code>date: 2016-03-06 21:51:00 CET</code>.</p>
+<p>The completely last thing was once creating new post (like this one here), I noticed, that it’s not displaying it… well what the hell I thought, but it was simple mistake of not including timezone with time given so it would probably appear after build in couple hours or so. But to be sure you are publishing what you want, set timezone, like i did: <code class="highlighter-rouge">date: 2016-03-06 21:51:00 CET</code>.</p>
 
 <p>And now I am loving it and never going back + hopefully will be active, previously did not completely work out, because I fell in love with startup culture so much I simply had no free time.</p>
 
@@ -190,7 +190,7 @@
   <li><a href="https://cz.linkedin.com/in/andrejantas" target="_blank"><i class="icon icon-linkedin"></i></a></li>
 </ul>
     <p class="txt-medium-gray">
-      <small>&copy;2017 All rights reserved. Made with <a href="http://jekyllrb.com/" target="_blank">Jekyll</a> and ♥</small>
+      <small>&copy;2019 All rights reserved. Made with <a href="http://jekyllrb.com/" target="_blank">Jekyll</a> and ♥</small>
     </p>
   </div>
 </footer>

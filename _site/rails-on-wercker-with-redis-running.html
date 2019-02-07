@@ -79,16 +79,16 @@
 
 <p>Let me walk you through it, but first I will just paste it here:</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="ss">services</span><span class="p">:</span>
-  <span class="o">-</span> <span class="n">redis</span>
-<span class="ss">build</span><span class="p">:</span>
-  <span class="ss">steps</span><span class="p">:</span>
-    <span class="o">-</span> <span class="n">install</span><span class="o">-</span><span class="ss">packages</span><span class="p">:</span>
-      <span class="ss">packages</span><span class="p">:</span> <span class="n">redis</span><span class="o">-</span><span class="n">server</span> <span class="n">redis</span><span class="o">-</span><span class="n">tools</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="ss">services:
+  </span><span class="o">-</span> <span class="n">redis</span>
+<span class="ss">build:
+  steps:
+    </span><span class="o">-</span> <span class="n">install</span><span class="o">-</span><span class="ss">packages:
+      packages: </span><span class="n">redis</span><span class="o">-</span><span class="n">server</span> <span class="n">redis</span><span class="o">-</span><span class="n">tools</span>
 
-    <span class="o">-</span> <span class="ss">script</span><span class="p">:</span>
-      <span class="nb">name</span><span class="p">:</span> <span class="n">start</span> <span class="n">redis</span>
-      <span class="ss">code</span><span class="p">:</span> <span class="o">|</span>
+    <span class="o">-</span> <span class="ss">script:
+      name: </span><span class="n">start</span> <span class="n">redis</span>
+      <span class="ss">code: </span><span class="o">|</span>
         <span class="n">redis</span><span class="o">-</span><span class="n">server</span> <span class="o">--</span><span class="n">daemonize</span> <span class="n">yes</span>
         <span class="n">redis</span><span class="o">-</span><span class="n">cli</span> <span class="n">ping</span></code></pre></figure>
 
@@ -96,32 +96,32 @@
 
 <p>So finally full config to run your tests including redis may look like this:</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="ss">ruby</span><span class="p">:</span> <span class="mi">2</span><span class="o">.</span><span class="mi">3</span><span class="o">.</span><span class="mi">1</span>
-<span class="ss">box</span><span class="p">:</span> <span class="n">ruby</span>
-<span class="ss">services</span><span class="p">:</span>
-  <span class="o">-</span> <span class="n">postgres</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="ss">ruby: </span><span class="mi">2</span><span class="o">.</span><span class="mi">3</span><span class="o">.</span><span class="mi">1</span>
+<span class="ss">box: </span><span class="n">ruby</span>
+<span class="ss">services:
+  </span><span class="o">-</span> <span class="n">postgres</span>
   <span class="o">-</span> <span class="n">redis</span>
-<span class="ss">build</span><span class="p">:</span>
-  <span class="ss">steps</span><span class="p">:</span>
-    <span class="o">-</span> <span class="n">install</span><span class="o">-</span><span class="ss">packages</span><span class="p">:</span>
-      <span class="ss">packages</span><span class="p">:</span> <span class="n">redis</span><span class="o">-</span><span class="n">server</span> <span class="n">redis</span><span class="o">-</span><span class="n">tools</span>
+<span class="ss">build:
+  steps:
+    </span><span class="o">-</span> <span class="n">install</span><span class="o">-</span><span class="ss">packages:
+      packages: </span><span class="n">redis</span><span class="o">-</span><span class="n">server</span> <span class="n">redis</span><span class="o">-</span><span class="n">tools</span>
 
-    <span class="o">-</span> <span class="ss">script</span><span class="p">:</span>
-      <span class="nb">name</span><span class="p">:</span> <span class="n">start</span> <span class="n">redis</span>
-      <span class="ss">code</span><span class="p">:</span> <span class="o">|</span>
+    <span class="o">-</span> <span class="ss">script:
+      name: </span><span class="n">start</span> <span class="n">redis</span>
+      <span class="ss">code: </span><span class="o">|</span>
         <span class="n">redis</span><span class="o">-</span><span class="n">server</span> <span class="o">--</span><span class="n">daemonize</span> <span class="n">yes</span>
         <span class="n">redis</span><span class="o">-</span><span class="n">cli</span> <span class="n">ping</span>
 
     <span class="o">-</span> <span class="n">bundle</span><span class="o">-</span><span class="n">install</span>
     <span class="o">-</span> <span class="n">rails</span><span class="o">-</span><span class="n">database</span><span class="o">-</span><span class="n">yml</span>
 
-    <span class="o">-</span> <span class="ss">script</span><span class="p">:</span>
-      <span class="nb">name</span><span class="p">:</span> <span class="no">Set</span> <span class="n">up</span> <span class="n">db</span>
-      <span class="ss">code</span><span class="p">:</span> <span class="n">bundle</span> <span class="nb">exec</span> <span class="n">rake</span> <span class="ss">db</span><span class="p">:</span><span class="ss">schema</span><span class="p">:</span><span class="nb">load</span> <span class="no">RAILS_ENV</span><span class="o">=</span><span class="nb">test</span>
+    <span class="o">-</span> <span class="ss">script:
+      name: </span><span class="no">Set</span> <span class="n">up</span> <span class="n">db</span>
+      <span class="ss">code: </span><span class="n">bundle</span> <span class="nb">exec</span> <span class="n">rake</span> <span class="n">db</span><span class="ss">:schema:load</span> <span class="no">RAILS_ENV</span><span class="o">=</span><span class="nb">test</span>
 
-    <span class="o">-</span> <span class="ss">script</span><span class="p">:</span>
-      <span class="nb">name</span><span class="p">:</span> <span class="n">rspec</span>
-      <span class="ss">code</span><span class="p">:</span> <span class="n">bundle</span> <span class="nb">exec</span> <span class="n">rspec</span></code></pre></figure>
+    <span class="o">-</span> <span class="ss">script:
+      name: </span><span class="n">rspec</span>
+      <span class="ss">code: </span><span class="n">bundle</span> <span class="nb">exec</span> <span class="n">rspec</span></code></pre></figure>
 
 <p>OK, my real config includes more than 60 lines, so probably I should walk you though it whole, but this one serves ok for purpose of demonstrating what does it take to run rspec tests including redis on wercker.</p>
 
@@ -168,7 +168,7 @@
   <li><a href="https://cz.linkedin.com/in/andrejantas" target="_blank"><i class="icon icon-linkedin"></i></a></li>
 </ul>
     <p class="txt-medium-gray">
-      <small>&copy;2017 All rights reserved. Made with <a href="http://jekyllrb.com/" target="_blank">Jekyll</a> and ♥</small>
+      <small>&copy;2019 All rights reserved. Made with <a href="http://jekyllrb.com/" target="_blank">Jekyll</a> and ♥</small>
     </p>
   </div>
 </footer>

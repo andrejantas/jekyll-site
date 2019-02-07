@@ -4,7 +4,7 @@ title: About me
 permalink: /about/
 ---
 
-I am Ruby on Rails enthusiast.
+I am Ruby on Rails enthusiast, a coffee lover, passionate fantasy literature nerd and a dad to be...
 
 Started long time ago as PHP developer and it did not suite my needs so then I thought how may I improve my situation?
 

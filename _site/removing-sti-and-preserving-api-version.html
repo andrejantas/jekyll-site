@@ -80,12 +80,12 @@ So the main problem is that we have functional a helpful intranet where many thi
 
 <p>So first of all what I did is preserve existing IDs, so by the time I migrate no two ids meet, that is a given from situation before and then I worked out that best would be to let these two tables share common sequence in this version of API and with the new one I will have to rewrite couple tools. But interesting thing is how really easy that was:</p>
 
-<figure class="highlight"><pre><code class="language-sql" data-lang="sql"><span></span><span class="k">CREATE</span> <span class="n">SEQUENCE</span> <span class="n">common_base_id_seq</span> <span class="k">START</span> <span class="k">WITH</span> <span class="mi">50000</span><span class="p">;</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="k">CREATE</span> <span class="n">SEQUENCE</span> <span class="n">common_base_id_seq</span> <span class="k">START</span> <span class="k">WITH</span> <span class="mi">50000</span><span class="p">;</span></code></pre></figure>
 
 <p>This way I just set up some common sequence I could use, then I just altered existing ones in my tables:</p>
 
-<figure class="highlight"><pre><code class="language-sql" data-lang="sql"><span></span><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">breads</span> <span class="k">ALTER</span> <span class="k">COLUMN</span> <span class="n">id</span> <span class="k">SET</span> <span class="k">DEFAULT</span> <span class="n">nextval</span><span class="p">(</span><span class="s1">&#39;common_base_id_seq&#39;</span><span class="p">);</span>
-<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">cucumbers</span> <span class="k">ALTER</span> <span class="k">COLUMN</span> <span class="n">id</span> <span class="k">SET</span> <span class="k">DEFAULT</span> <span class="n">nextval</span><span class="p">(</span><span class="s1">&#39;common_base_id_seq&#39;</span><span class="p">);</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">breads</span> <span class="k">ALTER</span> <span class="k">COLUMN</span> <span class="n">id</span> <span class="k">SET</span> <span class="k">DEFAULT</span> <span class="n">nextval</span><span class="p">(</span><span class="s1">'common_base_id_seq'</span><span class="p">);</span>
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">cucumbers</span> <span class="k">ALTER</span> <span class="k">COLUMN</span> <span class="n">id</span> <span class="k">SET</span> <span class="k">DEFAULT</span> <span class="n">nextval</span><span class="p">(</span><span class="s1">'common_base_id_seq'</span><span class="p">);</span></code></pre></figure>
 
 <p>What this will do for me now is that it will ensure between oth these tables ID will be unique.</p>
 
@@ -134,7 +134,7 @@ So the main problem is that we have functional a helpful intranet where many thi
   <li><a href="https://cz.linkedin.com/in/andrejantas" target="_blank"><i class="icon icon-linkedin"></i></a></li>
 </ul>
     <p class="txt-medium-gray">
-      <small>&copy;2017 All rights reserved. Made with <a href="http://jekyllrb.com/" target="_blank">Jekyll</a> and ♥</small>
+      <small>&copy;2019 All rights reserved. Made with <a href="http://jekyllrb.com/" target="_blank">Jekyll</a> and ♥</small>
     </p>
   </div>
 </footer>

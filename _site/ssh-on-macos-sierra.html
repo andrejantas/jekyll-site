@@ -65,21 +65,21 @@
     <div class="post-content">
       <p>As a shout in the dark I have to write this…. You cannot fathom what I just survived with setting up some stuff after “tiny loss of data” and recovery from timemachine backup. As the story goes I got my stuff back, but somehow iTerm got a bit off so I started over with it. Fresh install and so, I thought it is going to be easier… As far as brew that I use on MacOS goes and libraries I was missing from the backup all went well…</p>
 
-<p>Trouble started once I punched in <code>ssh SERVERNAME</code> to log into our company development machine…</p>
+<p>Trouble started once I punched in <code class="highlighter-rouge">ssh SERVERNAME</code> to log into our company development machine…</p>
 
 <p>First I started off with new annoying problem that happens above macOS 10.12. Mac simply forgets your identities.
-Before it was enough to get him to use Keychain Access by running <code>ssh -K /path/to/key</code> but that does not work anymore and according to what I read through SO it seems it desired behaviour by apple… well not by us right ?</p>
+Before it was enough to get him to use Keychain Access by running <code class="highlighter-rouge">ssh -K /path/to/key</code> but that does not work anymore and according to what I read through SO it seems it desired behaviour by apple… well not by us right ?</p>
 
-<p>So starting here, we need to create file <code>~/.ssh/config</code> if you got none, that is the place for the configuration. Here the rules go: server name and under it indented by tab all the options/properties or how you call them. So here I found out that I can mimic the old behaviour by only adding couple things in config. Just for someone that does not know, the old behaviour means that you mac keeps your identitties between restarts. And the piece of code is here:</p>
+<p>So starting here, we need to create file <code class="highlighter-rouge">~/.ssh/config</code> if you got none, that is the place for the configuration. Here the rules go: server name and under it indented by tab all the options/properties or how you call them. So here I found out that I can mimic the old behaviour by only adding couple things in config. Just for someone that does not know, the old behaviour means that you mac keeps your identitties between restarts. And the piece of code is here:</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="no">Host</span> <span class="o">*</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Host</span> <span class="o">*</span>
   <span class="no">UseKeychain</span> <span class="n">yes</span>
   <span class="no">AddKeysToAgent</span> <span class="n">yes</span>
   <span class="no">IdentityFile</span> <span class="o">~</span><span class="sr">/.ssh/i</span><span class="n">d_rsa</span></code></pre></figure>
 
 <p>As simple as the config can be right? Well not quiet yet. We are going to have other trouble. How I am used to work is that from the remote server I open apps that require window server (X11) to be running to display output from the dev machine that I am using. so lets add X11 forwarding there…</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="no">Host</span> <span class="o">*</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Host</span> <span class="o">*</span>
   <span class="no">ForwardX11</span> <span class="n">yes</span>
   <span class="no">UseKeychain</span> <span class="n">yes</span>
   <span class="no">AddKeysToAgent</span> <span class="n">yes</span>
@@ -89,31 +89,31 @@ Before it was enough to get him to use Keychain Access by running <code>ssh -K /
 
 <p>So by now X11 forwarding should be working… well it’s not, you will probably meet one of these:</p>
 
-<p><code>Warning: untrusted X11 forwarding setup failed: xauth key data not generated</code></p>
+<p><code class="highlighter-rouge">Warning: untrusted X11 forwarding setup failed: xauth key data not generated</code></p>
 
 <p>This first one can be easily solved by adding a line in config:</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="no">ForwardX11Trusted</span> <span class="n">yes</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">ForwardX11Trusted</span> <span class="n">yes</span></code></pre></figure>
 
 <p>Which now leaves us with warning:</p>
 
-<p><code>Warning: No xauth data; using fake authentication data for X11 forwarding.</code></p>
+<p><code class="highlighter-rouge">Warning: No xauth data; using fake authentication data for X11 forwarding.</code></p>
 
 <p>That we can get rid off by pointing to right xauth location since it has changed in new version of macOS and no one told us specifically… well maybe they did, but sure as hell nobody reads changelogs that are couple pages long… So this line will save the day here:</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="no">XAuthLocation</span> <span class="sr">/usr/</span><span class="no">X11</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">xauth</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">XAuthLocation</span> <span class="sr">/usr/</span><span class="no">X11</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">xauth</span></code></pre></figure>
 
-<p>And that should be it for the setup. So I go to dev machine, seems ok no warning on login, X11 opens up when I run something that requires window server, but once I get to <code>git pull</code> it goes off with:</p>
+<p>And that should be it for the setup. So I go to dev machine, seems ok no warning on login, X11 opens up when I run something that requires window server, but once I get to <code class="highlighter-rouge">git pull</code> it goes off with:</p>
 
-<p><code>Permission denied (publickey)</code></p>
+<p><code class="highlighter-rouge">Permission denied (publickey)</code></p>
 
 <p>Well of course it will since on remote I got no ssh keys and instead I forward mine, so I need to also add that in the config there.</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="no">ForwardAgent</span> <span class="n">yes</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">ForwardAgent</span> <span class="n">yes</span></code></pre></figure>
 
-<p>ok we are good to go now. So at the end our <code>~/.ssh/config</code> looks like this:</p>
+<p>ok we are good to go now. So at the end our <code class="highlighter-rouge">~/.ssh/config</code> looks like this:</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="no">Host</span> <span class="o">*</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Host</span> <span class="o">*</span>
     <span class="no">ForwardX11Trusted</span> <span class="n">yes</span>
     <span class="no">ForwardX11</span> <span class="n">yes</span>
     <span class="no">ForwardAgent</span> <span class="n">yes</span>
@@ -124,7 +124,7 @@ Before it was enough to get him to use Keychain Access by running <code>ssh -K /
 
 <p>Which is fair enough right, but to add a few extra lines, mine looks more or less like this:</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="no">Host</span> <span class="o">*</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Host</span> <span class="o">*</span>
     <span class="no">ForwardX11Trusted</span> <span class="n">yes</span>
     <span class="no">ForwardX11</span> <span class="n">yes</span>
     <span class="no">Compression</span> <span class="n">yes</span>
@@ -181,7 +181,7 @@ Before it was enough to get him to use Keychain Access by running <code>ssh -K /
   <li><a href="https://cz.linkedin.com/in/andrejantas" target="_blank"><i class="icon icon-linkedin"></i></a></li>
 </ul>
     <p class="txt-medium-gray">
-      <small>&copy;2017 All rights reserved. Made with <a href="http://jekyllrb.com/" target="_blank">Jekyll</a> and ♥</small>
+      <small>&copy;2019 All rights reserved. Made with <a href="http://jekyllrb.com/" target="_blank">Jekyll</a> and ♥</small>
     </p>
   </div>
 </footer>
